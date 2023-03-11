@@ -6,7 +6,7 @@ from rest_framework import viewsets
 from django.conf import settings
 from rest_framework import filters
 from django.core.mail import send_mail
-from zoomclone import settings
+from zoomoauth import settings
 import base64
 import requests
 import json

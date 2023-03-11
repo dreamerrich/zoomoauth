@@ -1,0 +1,58 @@
+{
+  "name": "open-react-template",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "axios": "^0.26.1",
+    "bootstrap": "^5.2.3",
+    "classnames": "^2.3.2",
+    "jwt-decode": "^3.1.2",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.4",
+    "react": "^16.13.1",
+    "react-avatar-edit": "^1.2.0",
+    "react-date-range": "^1.4.0",
+    "react-datepicker": "^4.10.0",
+    "react-dom": "^16.13.1",
+    "react-filter-search": "^1.1.11",
+    "react-ga": "^2.7.0",
+    "react-paginate": "^8.1.4",
+    "react-router-dom": "^5.1.2",
+    "react-scripts": "5.0.1",
+    "react-simple-oauth2-login": "^0.5.4",
+    "react-timezone-select": "^1.4.0",
+    "reactstrap": "^9.1.5",
+    "sass": "^1.58.3",
+    "spacetime": "^7.4.1",
+    "timezones.json": "^1.6.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cruip/open-react-template.git"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@craco/craco": "^7.0.0"
+  },
+  "proxy": "https://api.zoom.us/v2/"
+}
