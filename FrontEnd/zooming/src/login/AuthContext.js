@@ -1,10 +1,14 @@
 import React, { createContext, useState, useEffect } from "react";
 import jwt_decode from "jwt-decode";
-import { useHistory } from "react-router-dom";
+import { Redirect, useHistory } from "react-router-dom";
 
 const AuthContext = createContext();
 
 export default AuthContext;
+
+const client_id = "WiIRiYxPRYi0TXfYLETA"
+const client_secret = "i0XquN5BjonaQT406qyCbNn6gz3LJ7RB"
+const redirect_uri = "http://localhost:3000/"
 
 export const AuthProvider = ({ children }) => {
   const [authTokens, setAuthTokens] = useState(() =>
@@ -119,7 +123,7 @@ export const AuthProvider = ({ children }) => {
         duration,
       }),
     });
-    if (response.status === 200) {
+    if (response.status === 302) {
       history.push(`/ListMeeting`)
       return response.data;
     } else {
@@ -146,6 +150,26 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const GetCode = async () => {
+
+    const response = await fetch(`http://127.0.0.1:8000/code`, {
+      method: "GET",
+      mode: "no-cors",
+      params: {
+        "client_id": client_id,
+        "response_type": "code",
+        "redirect_uri": redirect_uri
+      } 
+    });
+    // if (response === 200) {
+    //   Redirect(response.data)
+    //   return response.data;
+    // } else {
+    //   alert("Something went wrong!");
+    // }
+    console.log(response);
+  };
+
   const contextData = {
     user,
     setUser,
@@ -157,6 +181,7 @@ export const AuthProvider = ({ children }) => {
     CreateMeeting,
     UpdateMeeting,
     DeleteMeeting,
+    GetCode,
   };
 
   useEffect(() => {

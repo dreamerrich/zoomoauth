@@ -1,15 +1,25 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 // import sections
 import Hero from '../components/sections/Hero';
 import FeaturesTiles from '../components/sections/FeaturesTiles';
 import FeaturesSplit from '../components/sections/FeaturesSplit';
 import Testimonial from '../components/sections/Testimonial';
 import Cta from '../components/sections/Cta';
-
+import AuthContext from '../login/AuthContext';
 
 const Home = () => {
-
+  const {GetCode} = useContext(AuthContext)
+  const [url, setUrl] = useState("None")
+  
+  useEffect(()=>{
+    GetCode()
+    setUrl(window.location.href)
+    localStorage.setItem('code', url)
+  }, [])
+  
   return (
+    <div>
+     
     <div>
         <Hero className="illustration-section-01" />
         <FeaturesTiles />
@@ -17,6 +27,8 @@ const Home = () => {
         <Testimonial topDivider />
         <Cta split />
     </div>
+
+  </div>
   );
 }
 
