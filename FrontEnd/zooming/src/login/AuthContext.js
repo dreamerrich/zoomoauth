@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from "react";
 import jwt_decode from "jwt-decode";
-import { Redirect, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 const AuthContext = createContext();
 
@@ -9,6 +9,8 @@ export default AuthContext;
 const client_id = "WiIRiYxPRYi0TXfYLETA"
 const client_secret = "i0XquN5BjonaQT406qyCbNn6gz3LJ7RB"
 const redirect_uri = "http://localhost:3000/"
+const authorizeUrl = "https://zoom.us/oauth/"
+
 
 export const AuthProvider = ({ children }) => {
   const [authTokens, setAuthTokens] = useState(() =>
@@ -22,7 +24,8 @@ export const AuthProvider = ({ children }) => {
       : null
   );
   const [loading, setLoading] = useState(true);
-
+  const [isLogged, setIsLogged] = useState(false)
+  const [Url, setUrl] = useState('');
   const history = useHistory();
 
   const loginUser = async (username, password) => {
@@ -151,7 +154,12 @@ export const AuthProvider = ({ children }) => {
   };
 
   const GetCode = async () => {
-
+    // if(!isLogged){
+    //   console.log(isLogged)
+    //   window.open('http://127.0.0.1:8000/code','_self')
+    //   setIsLogged(true);
+    // }
+      
     const response = await fetch(`http://127.0.0.1:8000/code`, {
       method: "GET",
       mode: "no-cors",
@@ -161,14 +169,14 @@ export const AuthProvider = ({ children }) => {
         "redirect_uri": redirect_uri
       } 
     });
-    // if (response === 200) {
-    //   Redirect(response.data)
-    //   return response.data;
-    // } else {
-    //   alert("Something went wrong!");
-    // }
+    if (response === 200) {
+      return response.data;
+    } else {
+      alert("Something went wrong!");
+    }
     console.log(response);
   };
+
 
   const contextData = {
     user,
@@ -182,6 +190,7 @@ export const AuthProvider = ({ children }) => {
     UpdateMeeting,
     DeleteMeeting,
     GetCode,
+    isLogged,
   };
 
   useEffect(() => {

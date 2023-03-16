@@ -6,12 +6,13 @@ import FeaturesSplit from '../components/sections/FeaturesSplit';
 import Testimonial from '../components/sections/Testimonial';
 import Cta from '../components/sections/Cta';
 import AuthContext from '../login/AuthContext';
+// import Cookies from 'js-cookie';
 
 const Home = () => {
-  const {GetCode} = useContext(AuthContext)
-  const [url, setUrl] = useState("None")
-  
-  useEffect(()=>{
+  const { GetCode } = useContext(AuthContext)
+  const [url, setUrl] = useState("")
+
+  useEffect(() => {
     GetCode()
     setUrl(window.location.href)
     localStorage.setItem('code', url)
@@ -19,7 +20,6 @@ const Home = () => {
   
   return (
     <div>
-     
     <div>
         <Hero className="illustration-section-01" />
         <FeaturesTiles />
@@ -27,7 +27,6 @@ const Home = () => {
         <Testimonial topDivider />
         <Cta split />
     </div>
-
   </div>
   );
 }

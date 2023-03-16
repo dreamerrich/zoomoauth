@@ -12,8 +12,9 @@ import requests
 import json
 from rest_framework import status
 from django_filters.rest_framework import DjangoFilterBackend
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from rest_framework.decorators import action
+from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 
@@ -24,18 +25,20 @@ class ZoomUser(APIView):
     permission_classes = (AllowAny,)
     def get(self, request):
         serializer = CodeSerializer
-        self.payload = {
+        params = {
             "client_id": settings.client_id,
             "response_type": "code",
             "redirect_uri": settings.redirect_uri
         }
 
-        url = auth_url+'authorize'+'?' + \
-            '&'.join(['='.join([k, v]) for k, v in self.payload.items()])
+        url = requests.get(auth_url+'authorize', params=params)
         print("???????????", url)
-        return HttpResponseRedirect(url)
-
-        # url = settings.redirect_uri
+        data = {
+            'redirect_url': url.url
+        }
+        print(data)
+        return JsonResponse(data)
+        
          
 class ZoomToken(APIView):
     def post(self, request):

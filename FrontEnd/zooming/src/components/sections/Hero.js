@@ -82,7 +82,7 @@ const Hero = ({
             </div>
           </div>
           <div className="hero-figure reveal-from-bottom illustration-element-01" data-reveal-value="20px" data-reveal-delay="800">
-            <ax             
+            <a             
               data-video="https://player.vimeo.com/video/174002812"
               href="#0"
               aria-controls="video-modal"
@@ -94,7 +94,7 @@ const Hero = ({
                 alt="Hero"
                 width={896}
                 height={504} />
-            </ax>
+            </a>
           </div>
           <Modal
             id="video-modal"
