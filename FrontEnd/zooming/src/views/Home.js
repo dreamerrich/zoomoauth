@@ -10,24 +10,29 @@ import AuthContext from '../login/AuthContext';
 
 const Home = () => {
   const { GetCode } = useContext(AuthContext)
-  const [url, setUrl] = useState("")
 
-  useEffect(() => {
+  const handleloading = (e) => {
+    e.preventDefault();
     GetCode()
-    setUrl(window.location.href)
-    localStorage.setItem('code', url)
-  }, [])
-  
+  }
+ 
+
+  localStorage.setItem('code', window.location.href)
+  console.log(localStorage.getItem('code'));
   return (
-    <div>
-    <div>
-        <Hero className="illustration-section-01" />
-        <FeaturesTiles />
-        <FeaturesSplit invertMobile topDivider imageFill className="illustration-section-02" />
-        <Testimonial topDivider />
-        <Cta split />
+
+      <div>
+        
+        <div onLoad={handleloading}>
+          <Hero className="illustration-section-01" />
+          <FeaturesTiles />
+          <FeaturesSplit invertMobile topDivider imageFill className="illustration-section-02" />
+          <Testimonial topDivider />
+          <Cta split />
+        </div>
+      
     </div>
-  </div>
+     
   );
 }
 

@@ -6,10 +6,10 @@ const AuthContext = createContext();
 
 export default AuthContext;
 
-const client_id = "WiIRiYxPRYi0TXfYLETA"
-const client_secret = "i0XquN5BjonaQT406qyCbNn6gz3LJ7RB"
-const redirect_uri = "http://localhost:3000/"
-const authorizeUrl = "https://zoom.us/oauth/"
+// const client_id = "WiIRiYxPRYi0TXfYLETA"
+// const client_secret = "i0XquN5BjonaQT406qyCbNn6gz3LJ7RB"
+// const redirect_uri = "http://localhost:3000/"
+// const authorizeUrl = "https://zoom.us/oauth/"
 
 
 export const AuthProvider = ({ children }) => {
@@ -24,8 +24,7 @@ export const AuthProvider = ({ children }) => {
       : null
   );
   const [loading, setLoading] = useState(true);
-  const [isLogged, setIsLogged] = useState(false)
-  const [Url, setUrl] = useState('');
+  const [isLogged, setIsLogged] = useState(false);
   const history = useHistory();
 
   const loginUser = async (username, password) => {
@@ -154,27 +153,27 @@ export const AuthProvider = ({ children }) => {
   };
 
   const GetCode = async () => {
-    // if(!isLogged){
-    //   console.log(isLogged)
-    //   window.open('http://127.0.0.1:8000/code','_self')
-    //   setIsLogged(true);
-    // }
+    if(!isLogged){
+      console.log(isLogged)
+      await window.open('http://127.0.0.1:8000/code', '_self')
+      setIsLogged(true);
+    } 
       
-    const response = await fetch(`http://127.0.0.1:8000/code`, {
-      method: "GET",
-      mode: "no-cors",
-      params: {
-        "client_id": client_id,
-        "response_type": "code",
-        "redirect_uri": redirect_uri
-      } 
-    });
-    if (response === 200) {
-      return response.data;
-    } else {
-      alert("Something went wrong!");
-    }
-    console.log(response);
+    // const response = await fetch(`http://127.0.0.1:8000/code`, {
+    //   method: "GET",
+    //   mode: "no-cors",
+    //   params: {
+    //     "client_id": client_id,
+    //     "response_type": "code",
+    //     "redirect_uri": redirect_uri
+    //   } 
+    // });
+    // if (response === 200) {
+    //   return response.data;
+    // } else {
+    //   alert("Something went wrong!");
+    // }
+    // console.log(response);
   };
 
 

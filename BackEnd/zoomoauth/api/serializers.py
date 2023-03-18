@@ -21,7 +21,7 @@ class MeetingSerializer(serializers.ModelSerializer):
 class ZoomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = ZoomUser
-        fields = ('id', 'first_name', 'last_name', 'password')
+        fields = ('id', 'first_name', 'last_name', 'password', 'type')
 
 class CodeSerializer(serializers.ModelSerializer):
    class Meta:

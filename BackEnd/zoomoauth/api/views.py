@@ -25,37 +25,44 @@ class ZoomUser(APIView):
     permission_classes = (AllowAny,)
     def get(self, request):
         serializer = CodeSerializer
-        params = {
+        self.payload = {
             "client_id": settings.client_id,
             "response_type": "code",
             "redirect_uri": settings.redirect_uri
         }
 
-        url = requests.get(auth_url+'authorize', params=params)
+        url = auth_url+'authorize'+'?' + \
+            '&'.join(['='.join([k, v]) for k, v in self.payload.items()])
         print("???????????", url)
-        data = {
-            'redirect_url': url.url
-        }
-        print(data)
-        return JsonResponse(data)
+        return HttpResponseRedirect(url)
+
+        # url = requests.get(auth_url+'authorize', params=params)
+        # print("???????????", url)
+        # data = {
+        #     'redirect_url': url.url
+        # }
+        # print(data)
+        # return JsonResponse(data)
         
+        # url = settings.redirect_uri
          
 class ZoomToken(APIView):
     def post(self, request):
-        code = request.GET['code']
-        print("🚀 ~ file: views.py:43 ~ code:", code)
+        # code = request.GET['code']
+        # print("🚀 ~ file: views.py:43 ~ code:", code)
         self.id_secret_encrypted = base64.b64encode(
             (settings.client_id + ':' + settings.client_secret).encode('utf-8')).decode('utf-8')
         serializer = TokenSerializer
         if request.method == 'POST':
 
-            headers = {
+            headers = { 
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'Authorization': 'Basic ' + self.id_secret_encrypted,
-                'cache-control': "no-cache",
+                'cache-control': 'no-cache',
             }
+            print(">>>>>>>>>>>>", self.id_secret_encrypted)
             params = {
-                "code": code,
+                "code": "45CSldNKE3MweztxbztSnOQ_UopFoZG5A",
                 "grant_type": "authorization_code",
                 "redirect_uri": settings.redirect_uri,
             }
@@ -67,37 +74,40 @@ class ZoomToken(APIView):
             #     )
         return HttpResponse(response)
     
-    def post(self, request):
-        self.id_secret_encrypted = base64.b64encode(
-            (settings.client_id + ':' + settings.client_secret).encode('utf-8')).decode('utf-8')
-        headers = {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': 'Basic ' + self.id_secret_encrypted
-        }
-        params = {
-            "grant_type": "refresh_token",
-            "refresh_token": "refresh_token"
-        }
-        response = requests.post(auth_url+'token', headers=headers, params=params)
-        print("============", response)
-        return HttpResponse(response)
+    # def post(self, request):
+    #     self.id_secret_encrypted = base64.b64encode(
+    #         (settings.client_id + ':' + settings.client_secret).encode('utf-8')).decode('utf-8')
+    #     headers = {
+    #         'Content-Type': 'application/x-www-form-urlencoded',
+    #         'Authorization': 'Basic ' + self.id_secret_encrypted
+    #     }
+    #     params = {
+    #         "grant_type": "refresh_token",
+    #         "refresh_token": "refresh_token"
+    #     }
+    #     response = requests.post(auth_url+'token', headers=headers, params=params)
+    #     print("============", response)
+    #     return HttpResponse(response)
     
     
 class ZoomMeetings(APIView):
     serializer_class = MeetingSerializer
     permission_classes = [IsAuthenticated, ]
     api_url = 'https://api.zoom.us/v2/'
-
-    def post(self, request, refresh_token, first_name, last_name, email, password):
+    access_token = "eyJhbGciOiJIUzUxMiIsInYiOiIyLjAiLCJraWQiOiI3YjNhOTRhZi1kOTBmLTQ3ZjAtYmJiZi1kNTk4ZWUwMGNlOWYifQ.eyJ2ZXIiOjgsImF1aWQiOiIwODAwMmVkZjY0OWZkYmQyY2IxZmYxMzY4NTM2YWEyNCIsImNvZGUiOiJUbGxoOHpUeWsyYmRYRnhyNTRNUWFLd2hPbkU1QmtJQ1EiLCJpc3MiOiJ6bTpjaWQ6V2lJUmlZeFBSWWkwVFhmWUxFVEEiLCJnbm8iOjAsInR5cGUiOjAsInRpZCI6MCwiYXVkIjoiaHR0cHM6Ly9vYXV0aC56b29tLnVzIiwidWlkIjoidkVQYlZvdTJUcnFXcHY4aEhaZXQ3dyIsIm5iZiI6MTY3ODk2ODY2NywiZXhwIjoxNjc4OTcyMjY3LCJpYXQiOjE2Nzg5Njg2NjcsImFpZCI6InFDLUs3WHR6VDlDUkVTSm94QlNKZWciLCJqdGkiOiIzNzY3Y2UxNS05ZWNlLTQxYTAtYjhlYy1jNTM2ZjEzNTE5YWEifQ.dPYcdCAslj3N57d0Q-IwUOWFGEcHosQVrUxHHlxqunN3-SMyoctmxY2fMuUAJZo7sZJ2iD0I9ZhGaFa8yztf-g"
+    def post(self, request, first_name, last_name, email, password, type=1):
         serializer_class = ZoomUserSerializer(data=request.data)
+
         headers = {
-            'Authorization': 'Bearer ' + ZoomToken().get_accessToken(refresh_token=refresh_token).json()['access_token']
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': f"'Bearer '  access_token"
         }
         data = {
             "first_name": first_name,
             "last_name": last_name,
             "email": email,
-            "password": password
+            "password": password,
+            "type":type
         }
         response = requests.post(self.api_url+'users', headers=headers, json=data)
         if serializer_class.is_valid():
