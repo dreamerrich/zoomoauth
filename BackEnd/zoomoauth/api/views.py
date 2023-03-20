@@ -47,27 +47,27 @@ class ZoomUser(APIView):
         # url = settings.redirect_uri
          
 class ZoomToken(APIView):
-    def post(self, request):
-        # code = request.GET['code']
-        # print("🚀 ~ file: views.py:43 ~ code:", code)
+    def post(self, request): 
+        authcode = request.COOKIES.get('code')
+        print("🚀 ~ file: views.py:43 ~ code:", authcode)
         self.id_secret_encrypted = base64.b64encode(
             (settings.client_id + ':' + settings.client_secret).encode('utf-8')).decode('utf-8')
         serializer = TokenSerializer
-        if request.method == 'POST':
+        # if request.method == 'POST':
 
-            headers = { 
+        headers = { 
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'Authorization': 'Basic ' + self.id_secret_encrypted,
                 'cache-control': 'no-cache',
             }
-            print(">>>>>>>>>>>>", self.id_secret_encrypted)
-            params = {
-                "code": "45CSldNKE3MweztxbztSnOQ_UopFoZG5A",
+            # print(">>>>>>>>>>>>", self.id_secret_encrypted)
+        params = {
+                "code": "OCi684qibnDefA_8JI9R5GnoTG_xcfV3w",
                 "grant_type": "authorization_code",
                 "redirect_uri": settings.redirect_uri,
             }
-            response = requests.post(auth_url+'token', headers=headers, params=params)
-            print (">>>>>>>>>>>>",response)
+        response = requests.post(auth_url+'token', headers=headers, params=params)
+        print (">>>>>>>>>>>>",request   )
             # if serializer.is_valid():
             #     serializer.save(
             #         'access': 

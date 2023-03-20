@@ -10,13 +10,12 @@ const AppRoute = ({
   Layout = (Layout === undefined) ? props => (<div>{props.children}</div>) : Layout;
 
   return (
-    <Route
-      {...rest}
+    <Route    
       render={props => (
         <Layout>
           <Component {...props} />
         </Layout>
-      )} />
+      )} {...rest}/>
   );
 }
 

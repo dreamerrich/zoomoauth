@@ -82,6 +82,7 @@ export const AuthProvider = ({ children }) => {
     setAuthTokens(null);
     setUser(null);
     localStorage.removeItem("authTokens");
+    localStorage.removeItem("logged_in")
     history.push("/");
   };
 
@@ -156,8 +157,9 @@ export const AuthProvider = ({ children }) => {
     if(!isLogged){
       console.log(isLogged)
       await window.open('http://127.0.0.1:8000/code', '_self')
+      localStorage.setItem("logged_in",true)
       setIsLogged(true);
-    } 
+    }
       
     // const response = await fetch(`http://127.0.0.1:8000/code`, {
     //   method: "GET",
