@@ -10,14 +10,14 @@ class ZoomUser(models.Model):
     last_name = models.CharField(max_length=64, null=False, unique=True)
     email = models.EmailField(null=False, unique=True)
     password = models.CharField( max_length=32 ,null=False)
-    type = models.IntegerField(null=False)
+    type = models.IntegerField(null=True)
 
 class code(models.Model):
     code = models.CharField(max_length=255)
 
 class Tokens(models.Model):
-    access = models.CharField(max_length=255)
-    refresh = models.CharField(max_length=255)
+    accesstoken = models.CharField(max_length=255,null=True)
+    refreshtoken = models.CharField(max_length=255, null=True)
 
 class CreateMeeting(models.Model):
     user = models.ForeignKey(ZoomUser, on_delete=models.CASCADE, null=False)

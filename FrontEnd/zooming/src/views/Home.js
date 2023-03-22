@@ -8,28 +8,28 @@ import AuthContext from '../login/AuthContext';
 import Cookies from 'js-cookie';
 
 const Home = () => {
-  const { GetCode, Code, Tokens} = useContext(AuthContext)
+  const { GetCode, Tokens} = useContext(AuthContext)
 
   const handleloading = (e) => {
     e.preventDefault();
     if(!localStorage.getItem("logged_in"))  
     GetCode()
   }
-  Code()
+  
   const getparam = new URLSearchParams(window.location.search)
   const data = getparam.get('code')
-  Cookies.set('code', data)
+  Cookies.set('code', data, 20)
   
-  const handletoken = (e) => {
-    e.preventDefault();
-    if(Cookies.get('code'))
+  const token = () => {
+    if(!localStorage.getItem('authtokens'))
     Tokens()
   }
+  
   return (
 
-      <div>
+      <div onLoad={handleloading}>
         
-        <div onLoad={handleloading}>
+        <div>
           <Hero className="illustration-section-01" />
           <FeaturesTiles />
           <FeaturesSplit invertMobile topDivider imageFill className="illustration-section-02" />

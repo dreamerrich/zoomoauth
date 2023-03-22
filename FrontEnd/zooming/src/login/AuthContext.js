@@ -165,32 +165,30 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const Code = async () => {
-    const response = await fetch(`http://127.0.0.1:8000/getcode`, {
-      method: "GET",
-      headers: { 
-        'Content-Type': 'application/json',
-        'X-CSRFToken': Cookies.get('csrftoken'),
-        'X-MyCookie': cookieValue,
-      } 
-      });
-      if (response.status === 200) {
-        return response.data;
-      } else {
-        alert("Something went wrong!");
-      }
-  }
+  // const Code = async () => {
+  //   const response = await fetch(`http://127.0.0.1:8000/getcode`, {
+  //     method: "GET",
+  //     headers: { 
+  //       'Content-Type': 'application/json',
+  //       'X-CSRFToken': Cookies.get('csrftoken'),
+  //       'X-MyCookie': cookieValue,
+  //     } 
+  //     });
+  //     if (response.status === 200) {
+  //       return response.data;
+  //     } else {
+  //       alert("Something went wrong!");
+  //     }
+  // }
 
   const Tokens = async () => {
     const authdata = btoa(`${client_id} + ':' + ${client_secret}`)
-    // console.log("🚀 ~ file: AuthContext.js:183 ~ Tokens ~ authdata:", authdata)
     const response = await fetch(`http://127.0.0.1:8000/tokens`, {
       method: "POST",
       headers : { 
         'Content-Type': 'application/x-www-form-urlencoded',
         'Authorization': 'Basic ' + authdata,
         'cache-control': 'no-cache',
-        'X-CSRFToken': Cookies.get('csrftoken'),
         'X-MyCookie': cookieValue,
       },
     
@@ -201,13 +199,17 @@ export const AuthProvider = ({ children }) => {
       }
 
     });
+    const data = await response.json();
     if (response.status === 200) {
-      return response.data;
+      // setAuthTokens(data);
+      // setUser(jwt_decode(data.access));
+      localStorage.setItem("authTokens", JSON.stringify(data));
+      return data.access_token;
     } else {
       alert("Something went wrong!");
     }
     console.log(">>>>>>>>>>>>>>>>>>>>",response.data);
-  }
+  };
 
 
   const contextData = {
@@ -223,7 +225,7 @@ export const AuthProvider = ({ children }) => {
     DeleteMeeting,
     GetCode,
     isLogged,
-    Code,
+    // Code,
     Tokens,
   };
 

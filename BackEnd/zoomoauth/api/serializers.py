@@ -31,4 +31,4 @@ class CodeSerializer(serializers.ModelSerializer):
 class TokenSerializer(serializers.ModelSerializer):
    class Meta:
       model = Tokens
-      fields = ('acess', 'refresh')
+      fields = ('accesstoken', 'refreshtoken')

@@ -55,11 +55,11 @@ class Codeget(APIView):
 
 class ZoomToken(APIView):
     def post(self, request): 
+        serializer_class = TokenSerializer(data=request.data)
         self.id_secret_encrypted = base64.b64encode(
             (settings.client_id + ':' + settings.client_secret).encode('utf-8')).decode('utf-8')
         authcode = request.headers.get('X-MyCookie')
         print("🚀 ~ file: views.py:43 ~ authcode: from fetch", authcode)
-        serializer_class = TokenSerializer
 
         headers = { 
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -76,26 +76,30 @@ class ZoomToken(APIView):
         tokendata = response.text
         tokens = json.loads(tokendata)
         print("🚀 ~ file: views.py:79 ~ tokens:", tokens)
-        serializer_class.save(
-            access = tokens["access_token"],
-            refresh = tokens["refresh_token"]
-        )
+        if serializer_class.is_valid():
+            try:
+                serializer_class.save(
+                    accesstoken=tokens['access_token'],
+                    refreshtoken=tokens['refresh_token']
+                )
+            except KeyError as e:
+                print(f"Error: {e}")
         return HttpResponse(response)
     
-    def get(self, request):
-        self.id_secret_encrypted = base64.b64encode(
-            (settings.client_id + ':' + settings.client_secret).encode('utf-8')).decode('utf-8')
-        headers = {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': 'Basic ' + self.id_secret_encrypted
-        }
-        params = {
-            "grant_type": "refresh_token",
-            "refresh_token": "refresh_token"
-        }
-        response = requests.post(auth_url+'token', headers=headers, params=params)
-        print("============", response)
-        return HttpResponse(response)
+    # def get(self, request):
+    #     self.id_secret_encrypted = base64.b64encode(
+    #         (settings.client_id + ':' + settings.client_secret).encode('utf-8')).decode('utf-8')
+    #     headers = {
+    #         'Content-Type': 'application/x-www-form-urlencoded',
+    #         'Authorization': 'Basic ' + self.id_secret_encrypted
+    #     }
+    #     params = {
+    #         "grant_type": "refresh_token",
+    #         "refresh_token": "refresh_token"
+    #     }
+    #     response = requests.post(auth_url+'token', headers=headers, params=params)
+    #     print("============", response)
+    #     return HttpResponse(response)
     
     
 class ZoomMeetings(APIView):
