@@ -8,5 +8,6 @@ urlpatterns = [
     path('meeting', MeetingList.as_view()),
     # path('profile', Profile.as_view()), 
     path('code',ZoomUser.as_view()),
+    path('getcode', Codeget.as_view()),
     path('tokens', ZoomToken.as_view()),
 ]

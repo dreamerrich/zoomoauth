@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import classNames from 'classnames';
 import { SectionProps } from '../../utils/SectionProps';
 import ButtonGroup from '../elements/ButtonGroup';
@@ -6,8 +6,8 @@ import Button from '../elements/Button';
 import Image from '../elements/Image';
 import Modal from '../elements/Modal';
 import SignInModal from '../pages/SignUpModal';
-// import Plans from './Plans&pricing';
-
+import AuthContext from '../../login/AuthContext';
+import Cookies from 'js-cookie';
 const propTypes = {
   ...SectionProps.types
 }
@@ -54,6 +54,13 @@ const Hero = ({
     topDivider && 'has-top-divider',
     bottomDivider && 'has-bottom-divider'
   );
+  
+  const { Tokens } = useContext(AuthContext)
+  const handletoken = (e) => {
+    e.preventDefault();
+    if(Cookies.get('code'))
+    Tokens()
+  }
 
 
   return (
@@ -76,7 +83,7 @@ const Hero = ({
                   <Button tag="a" color="primary" wideMobile href="/Plans">
                     Plans & Pricing
                     </Button>
-                      <Button color="dark"><SignInModal join={true}  /></Button>
+                      <Button color="dark" onClick={handletoken}><SignInModal join={true}  /></Button>
                 </ButtonGroup>
               </div>
             </div>

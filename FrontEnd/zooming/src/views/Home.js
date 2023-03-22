@@ -8,22 +8,23 @@ import AuthContext from '../login/AuthContext';
 import Cookies from 'js-cookie';
 
 const Home = () => {
-  const { GetCode } = useContext(AuthContext)
+  const { GetCode, Code, Tokens} = useContext(AuthContext)
 
   const handleloading = (e) => {
     e.preventDefault();
     if(!localStorage.getItem("logged_in"))  
     GetCode()
-  } 
-  
+  }
+  Code()
   const getparam = new URLSearchParams(window.location.search)
-  console.log("🚀 ~ file: Home.js:20 ~ Home ~ getparam:", getparam)
   const data = getparam.get('code')
-  console.log("🚀 ~ file: Home.js:22 ~ Home ~ data:", data)
   Cookies.set('code', data)
-  // document.cookie = `'code'=data; domain=localhost; path=localhost:8000/tokens`;
-  // console.log(localStorage.getItem('code'));
-
+  
+  const handletoken = (e) => {
+    e.preventDefault();
+    if(Cookies.get('code'))
+    Tokens()
+  }
   return (
 
       <div>

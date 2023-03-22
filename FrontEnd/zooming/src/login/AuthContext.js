@@ -1,14 +1,15 @@
 import React, { createContext, useState, useEffect } from "react";
 import jwt_decode from "jwt-decode";
 import { useHistory } from "react-router-dom";
+import Cookies from "js-cookie";
 
 const AuthContext = createContext();
 
 export default AuthContext;
 
-// const client_id = "WiIRiYxPRYi0TXfYLETA"
-// const client_secret = "i0XquN5BjonaQT406qyCbNn6gz3LJ7RB"
-// const redirect_uri = "http://localhost:3000/"
+const client_id = "WiIRiYxPRYi0TXfYLETA"
+const client_secret = "i0XquN5BjonaQT406qyCbNn6gz3LJ7RB"
+const redirect_uri = "http://localhost:3000/"
 // const authorizeUrl = "https://zoom.us/oauth/"
 
 
@@ -153,30 +154,60 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const cookieValue = Cookies.get('code') 
+  // console.log("🚀 ~ file: AuthContext.js:158 ~ AuthProvider ~ cookieValue:", cookieValue)
   const GetCode = async () => {
     if(!isLogged){
-      console.log(isLogged)
+      // console.log(isLogged)
       await window.open('http://127.0.0.1:8000/code', '_self')
       localStorage.setItem("logged_in",true)
       setIsLogged(true);
     }
-      
-    // const response = await fetch(`http://127.0.0.1:8000/code`, {
-    //   method: "GET",
-    //   mode: "no-cors",
-    //   params: {
-    //     "client_id": client_id,
-    //     "response_type": "code",
-    //     "redirect_uri": redirect_uri
-    //   } 
-    // });
-    // if (response === 200) {
-    //   return response.data;
-    // } else {
-    //   alert("Something went wrong!");
-    // }
-    // console.log(response);
   };
+
+  const Code = async () => {
+    const response = await fetch(`http://127.0.0.1:8000/getcode`, {
+      method: "GET",
+      headers: { 
+        'Content-Type': 'application/json',
+        'X-CSRFToken': Cookies.get('csrftoken'),
+        'X-MyCookie': cookieValue,
+      } 
+      });
+      if (response.status === 200) {
+        return response.data;
+      } else {
+        alert("Something went wrong!");
+      }
+  }
+
+  const Tokens = async () => {
+    const authdata = btoa(`${client_id} + ':' + ${client_secret}`)
+    // console.log("🚀 ~ file: AuthContext.js:183 ~ Tokens ~ authdata:", authdata)
+    const response = await fetch(`http://127.0.0.1:8000/tokens`, {
+      method: "POST",
+      headers : { 
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': 'Basic ' + authdata,
+        'cache-control': 'no-cache',
+        'X-CSRFToken': Cookies.get('csrftoken'),
+        'X-MyCookie': cookieValue,
+      },
+    
+      params : {
+        "code": cookieValue,
+        "grant_type": "authorization_code",
+        "redirect_uri": redirect_uri,
+      }
+
+    });
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      alert("Something went wrong!");
+    }
+    console.log(">>>>>>>>>>>>>>>>>>>>",response.data);
+  }
 
 
   const contextData = {
@@ -192,6 +223,8 @@ export const AuthProvider = ({ children }) => {
     DeleteMeeting,
     GetCode,
     isLogged,
+    Code,
+    Tokens,
   };
 
   useEffect(() => {

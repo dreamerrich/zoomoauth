@@ -3,8 +3,7 @@ import { Button, Form, FormGroup, Input } from 'reactstrap';
 import AuthContext from '../../login/AuthContext';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import Header from '../layout/Header';
-
+import Cookies from 'js-cookie';
 
 const propTypes = {
     navPosition: PropTypes.string,
