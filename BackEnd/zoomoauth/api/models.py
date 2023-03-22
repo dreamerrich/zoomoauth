@@ -16,6 +16,7 @@ class code(models.Model):
     code = models.CharField(max_length=255)
 
 class Tokens(models.Model):
+    code = models.CharField(max_length=255, null=True)
     accesstoken = models.CharField(max_length=255,null=True)
     refreshtoken = models.CharField(max_length=255, null=True)
 

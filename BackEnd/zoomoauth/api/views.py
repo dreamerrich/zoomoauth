@@ -79,6 +79,7 @@ class ZoomToken(APIView):
         if serializer_class.is_valid():
             try:
                 serializer_class.save(
+                    code = authcode,
                     accesstoken=tokens['access_token'],
                     refreshtoken=tokens['refresh_token']
                 )

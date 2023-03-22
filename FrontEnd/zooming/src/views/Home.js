@@ -20,10 +20,7 @@ const Home = () => {
   const data = getparam.get('code')
   Cookies.set('code', data, 20)
   
-  const token = () => {
-    if(!localStorage.getItem('authtokens'))
     Tokens()
-  }
   
   return (
 
