@@ -23,12 +23,12 @@ class ZoomUserSerializer(serializers.ModelSerializer):
         model = ZoomUser
         fields = ('id', 'first_name', 'last_name', 'password', 'type')
 
-class CodeSerializer(serializers.ModelSerializer):
-   class Meta:
-      model = code
-      fields = ('code')
-
 class TokenSerializer(serializers.ModelSerializer):
    class Meta:
       model = Tokens
       fields = ('code','accesstoken', 'refreshtoken')
+
+class UserdataSerialzer(serializers.ModelSerializer):
+   class Meta:
+      model = userData
+      fields = '__all__'

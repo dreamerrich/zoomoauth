@@ -15,17 +15,22 @@ const Home = () => {
     if(!localStorage.getItem("logged_in"))  
     GetCode()
   }
-  
+
   const getparam = new URLSearchParams(window.location.search)
   const data = getparam.get('code')
+  // console.log("🚀 ~ file: Home.js:21 ~ Home ~ data:", data)
   Cookies.set('code', data, 20)
   
+  const token = () => {
+    if(!localStorage.getItem("authtokens"))
     Tokens()
+  }
+  
+  token()
   
   return (
 
       <div onLoad={handleloading}>
-        
         <div>
           <Hero className="illustration-section-01" />
           <FeaturesTiles />

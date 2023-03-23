@@ -5,8 +5,8 @@ from rest_framework.views import APIView
 from rest_framework import viewsets
 from django.conf import settings
 from rest_framework import filters
-from django.core.mail import send_mail
 from zoomoauth import settings
+import datetime
 import base64
 import requests
 import json
@@ -47,7 +47,6 @@ class ZoomUser(APIView):
 
 class Codeget(APIView):
     def get(self, request):
-        serializer_class = CodeSerializer
         code = request.headers.get('X-MyCookie')
         print("🚀 ~ file: views.py:52 ~ code:", code)
         
@@ -85,53 +84,91 @@ class ZoomToken(APIView):
                 )
             except KeyError as e:
                 print(f"Error: {e}")
-        return HttpResponse(response)
+        return Response(tokens)
     
-    # def get(self, request):
-    #     self.id_secret_encrypted = base64.b64encode(
-    #         (settings.client_id + ':' + settings.client_secret).encode('utf-8')).decode('utf-8')
-    #     headers = {
-    #         'Content-Type': 'application/x-www-form-urlencoded',
-    #         'Authorization': 'Basic ' + self.id_secret_encrypted
-    #     }
-    #     params = {
-    #         "grant_type": "refresh_token",
-    #         "refresh_token": "refresh_token"
-    #     }
-    #     response = requests.post(auth_url+'token', headers=headers, params=params)
-    #     print("============", response)
-    #     return HttpResponse(response)
-    
-    
-class ZoomMeetings(APIView):
-    serializer_class = MeetingSerializer
-    permission_classes = [IsAuthenticated, ]
-    api_url = 'https://api.zoom.us/v2/'
-    access_token = "eyJhbGciOiJIUzUxMiIsInYiOiIyLjAiLCJraWQiOiI3YjNhOTRhZi1kOTBmLTQ3ZjAtYmJiZi1kNTk4ZWUwMGNlOWYifQ.eyJ2ZXIiOjgsImF1aWQiOiIwODAwMmVkZjY0OWZkYmQyY2IxZmYxMzY4NTM2YWEyNCIsImNvZGUiOiJUbGxoOHpUeWsyYmRYRnhyNTRNUWFLd2hPbkU1QmtJQ1EiLCJpc3MiOiJ6bTpjaWQ6V2lJUmlZeFBSWWkwVFhmWUxFVEEiLCJnbm8iOjAsInR5cGUiOjAsInRpZCI6MCwiYXVkIjoiaHR0cHM6Ly9vYXV0aC56b29tLnVzIiwidWlkIjoidkVQYlZvdTJUcnFXcHY4aEhaZXQ3dyIsIm5iZiI6MTY3ODk2ODY2NywiZXhwIjoxNjc4OTcyMjY3LCJpYXQiOjE2Nzg5Njg2NjcsImFpZCI6InFDLUs3WHR6VDlDUkVTSm94QlNKZWciLCJqdGkiOiIzNzY3Y2UxNS05ZWNlLTQxYTAtYjhlYy1jNTM2ZjEzNTE5YWEifQ.dPYcdCAslj3N57d0Q-IwUOWFGEcHosQVrUxHHlxqunN3-SMyoctmxY2fMuUAJZo7sZJ2iD0I9ZhGaFa8yztf-g"
-    def post(self, request, first_name, last_name, email, password, type=1):
-        serializer_class = ZoomUserSerializer(data=request.data)
-
+    def get(self, request):
+        serializer_class = UserdataSerialzer(data=request.data)
+        authcode = request.headers.get('X-MyCookie')
+        access = ''
+        print("🚀 ~ file: views.py:92 ~ access:", access)
+        url = 'https://api.zoom.us/v2/users'
         headers = {
             'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': f"'Bearer '  access_token"
+            'Authorization': 'Bearer ' + 'eyJhbGciOiJIUzUxMiIsInYiOiIyLjAiLCJraWQiOiI0MmU2MzAwMS1hODNlLTRlNWMtOTI3YS03ZjMzNWViMDY1MTcifQ.eyJ2ZXIiOjgsImF1aWQiOiIzNzE5MTQxNDlmMGFkMDI2NWNmMGIyY2JkNWJiNDVlZCIsImNvZGUiOiJlY0RXREhkQUdoc1NVUUFreURlUW5XOE8yZmtaa1A5dkEiLCJpc3MiOiJ6bTpjaWQ6V2lJUmlZeFBSWWkwVFhmWUxFVEEiLCJnbm8iOjAsInR5cGUiOjAsInRpZCI6MCwiYXVkIjoiaHR0cHM6Ly9vYXV0aC56b29tLnVzIiwidWlkIjoidkVQYlZvdTJUcnFXcHY4aEhaZXQ3dyIsIm5iZiI6MTY3OTU2NjE0NiwiZXhwIjoxNjc5NTY5NzQ2LCJpYXQiOjE2Nzk1NjYxNDYsImFpZCI6InFDLUs3WHR6VDlDUkVTSm94QlNKZWciLCJqdGkiOiI0MDVlM2IxNC05ZjdkLTRiYzktOGI0MS0zYThmNjVjMzk4MWMifQ.B6M58Qgpke46t6GSv-GB84aoCbWmAYaLwjloxqGqaUhMqZXVi_0EKx1nO4D1wZou1__XR1ut1RIZ5__TnbTfKg'
         }
-        data = {
-            "first_name": first_name,
-            "last_name": last_name,
-            "email": email,
-            "password": password,
-            "type":type
-        }
-        response = requests.post(self.api_url+'users', headers=headers, json=data)
+        response = requests.get(url, headers=headers)
+        userinfo = response.text
+        data = json.loads(userinfo)
         if serializer_class.is_valid():
-            serializer_class.save()
-            return Response(serializer_class.data, response)
-        return Response(serializer_class.errors, status=status.HTTP_400_BAD_REQUEST)
+            try:
+                serializer_class.save(
+                    firstname=data['first_name'],
+                    lastname=data['last_name'],
+                    userid=data['id'],
+                    email=data['email']
+                )
+            except KeyError as e:
+                print(f"Error: {e}")
+        return Response(response)
+    
+
+class refreshtoken(APIView):
+    def post(self, request):
+        serializer_class = TokenSerializer(data=request.data)
+        self.id_secret_encrypted = base64.b64encode(
+            (settings.client_id + ':' + settings.client_secret).encode('utf-8')).decode('utf-8')
+        headers = {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': 'Basic ' + self.id_secret_encrypted
+        }
+        params = {
+            "grant_type": "refresh_token",
+            "refresh_token": "refresh_token"
+        }
+        response = requests.post(auth_url+'token', headers=headers, params=params)
+        tokendata = response.text
+        tokens = json.loads(tokendata)
+        print("🚀 ~ file: views.py:79 ~ tokens:", tokens)
+        if serializer_class.is_valid():
+            try:
+                serializer_class.save(
+                    accesstoken=tokens['access_token'],
+                    refreshtoken=tokens['refresh_token']
+                )
+            except KeyError as e:
+                print(f"Error: {e}")
+        print("============", tokens)
+        return Response(tokens)
+    
+
+    
+class ZoomMeetings(APIView):
+    def post(self,request):
+        serializer_class = MeetingSerializer(data=request.data, context={'request':request})
+        date = datetime.datetime.now()
+        url = 'https://api.zoom.us/v2/users/meetings'
+        jsonObj = {"topic":request.data['topic'], "start_time":date.strftime('yyyy-MM-ddTHH:mm:ssZ'), "timezone":request.data['timezone'], "duration":request.data['duration']}
+        header = {'authorization': 'Bearer '+self.request_token}
+        zoom_create_meeting = requests.post(url,json=jsonObj, headers=header)
+        meet_detail = zoom_create_meeting.text
+        detail = json.loads(meet_detail)
+        if serializer_class.is_valid(raise_exception=True):
+            serializer_class.save(
+                topic=request.data['topic'],
+                start_time=request.data['start_time'],
+                timezone = request.data['timezone'],
+                duration=request.data['duration'],
+                url=detail['join_url'],
+                meeting_id=detail['id'],
+                passcode=detail['password'],
+                user = self.request.user 
+            )
+            return Response(serializer_class.data)
 
     def get(self, refresh_token):
 
         headers = {
-            'Authorization': 'Bearer ' + ZoomUser().get_accessToken(refresh_token=refresh_token).json()['access_token']
+                
         }
         response = requests.get(
             self.api_url+'users/me/zak', headers=headers)

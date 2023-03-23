@@ -12,9 +12,6 @@ class ZoomUser(models.Model):
     password = models.CharField( max_length=32 ,null=False)
     type = models.IntegerField(null=True)
 
-class code(models.Model):
-    code = models.CharField(max_length=255)
-
 class Tokens(models.Model):
     code = models.CharField(max_length=255, null=True)
     accesstoken = models.CharField(max_length=255,null=True)
@@ -35,3 +32,8 @@ class CreateMeeting(models.Model):
     def __str__(self):
         return str(self.meeting_id) 
 
+class userData(models.Model):
+    firstname = models.CharField(max_length=255, null=True)
+    lastname = models.CharField(max_length=255, null=True)
+    userid = models.CharField(max_length=255, null=True)
+    email = models.EmailField()

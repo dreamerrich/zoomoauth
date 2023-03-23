@@ -28,6 +28,48 @@ export const AuthProvider = ({ children }) => {
   const [isLogged, setIsLogged] = useState(false);
   const history = useHistory();
 
+  const cookieValue = Cookies.get('code') 
+  
+  const GetCode = async () => {
+    if(!isLogged){
+      console.log(isLogged)
+      await window.open('http://127.0.0.1:8000/code', '_self')
+      localStorage.setItem("logged_in",true)
+      isLogged(true)
+    }
+    setIsLogged(false);
+  };
+
+  const Tokens = async () => {
+    const authdata = btoa(`${client_id} + ':' + ${client_secret}`)
+    const response = await fetch(`http://127.0.0.1:8000/tokens`, {
+      method: "POST",
+      headers : { 
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': 'Basic ' + authdata,
+        'cache-control': 'no-cache',
+        'X-MyCookie': cookieValue,
+      },
+    
+      params : {
+        "code": cookieValue,
+        "grant_type": "authorization_code",
+        "redirect_uri": redirect_uri,
+      }
+
+    });
+    const data = await response.json();
+    if (response.status === 200) {
+      // setAuthTokens(data);
+      // setUser(jwt_decode(data.access));
+      localStorage.setItem("authTokens", JSON.stringify(data));
+      return data.access_token;
+    } else {
+      alert("Something went wrong!");
+    }
+    console.log(">>>>>>>>>>>>>>>>>>>>",response.data);
+  };
+
   const loginUser = async (username, password) => {
     const response = await fetch("http://127.0.0.1:8000/login", {
       method: "POST",
@@ -42,7 +84,7 @@ export const AuthProvider = ({ children }) => {
     const data = await response.json();
     if (response.status === 200) {
       setAuthTokens(data);
-      setUser(jwt_decode(data.access));
+      setUser(jwt_decode(data.access_token));
       localStorage.setItem("authTokens", JSON.stringify(data));
       history.push("/Dashboard");
     } else {
@@ -93,7 +135,7 @@ export const AuthProvider = ({ children }) => {
     const response = await fetch("http://127.0.0.1:8000/createmeet", {
       method: "POST",
       headers: {
-        Authorization: "Bearer " + authtoken.access,
+        Authorization: "Bearer " + authtoken.access_token,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -117,7 +159,7 @@ export const AuthProvider = ({ children }) => {
     const response = await fetch(`http://127.0.0.1:8000/updatemeet/${id}`, {
       method: "PATCH",
       headers: {
-        Authorization: "Bearer " + authtoken.access,
+        Authorization: "Bearer " + authtoken.access_token,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -142,7 +184,7 @@ export const AuthProvider = ({ children }) => {
     const response = await fetch(`http://127.0.0.1:8000/updatemeet/${id}`, {
       method: "DELETE",
       headers: {
-        Authorization: "Bearer " + authtoken.access,
+        Authorization: "Bearer " + authtoken.access_token,
         "Content-Type": "application/json",
       }
     });
@@ -154,16 +196,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const cookieValue = Cookies.get('code') 
-  // console.log("🚀 ~ file: AuthContext.js:158 ~ AuthProvider ~ cookieValue:", cookieValue)
-  const GetCode = async () => {
-    if(!isLogged){
-      // console.log(isLogged)
-      await window.open('http://127.0.0.1:8000/code', '_self')
-      localStorage.setItem("logged_in",true)
-      setIsLogged(true);
-    }
-  };
 
   // const Code = async () => {
   //   const response = await fetch(`http://127.0.0.1:8000/getcode`, {
@@ -181,36 +213,6 @@ export const AuthProvider = ({ children }) => {
   //     }
   // }
 
-  const Tokens = async () => {
-    const authdata = btoa(`${client_id} + ':' + ${client_secret}`)
-    const response = await fetch(`http://127.0.0.1:8000/tokens`, {
-      method: "POST",
-      headers : { 
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': 'Basic ' + authdata,
-        'cache-control': 'no-cache',
-        'X-MyCookie': cookieValue,
-      },
-    
-      params : {
-        "code": cookieValue,
-        "grant_type": "authorization_code",
-        "redirect_uri": redirect_uri,
-      }
-
-    });
-    const data = await response.json();
-    if (response.status === 200) {
-      // setAuthTokens(data);
-      // setUser(jwt_decode(data.access));
-      localStorage.setItem("authTokens", JSON.stringify(data));
-      return data.access_token;
-    } else {
-      alert("Something went wrong!");
-    }
-    console.log(">>>>>>>>>>>>>>>>>>>>",response.data);
-  };
-
 
   const contextData = {
     user,
@@ -224,7 +226,6 @@ export const AuthProvider = ({ children }) => {
     UpdateMeeting,
     DeleteMeeting,
     GetCode,
-    isLogged,
     // Code,
     Tokens,
   };
