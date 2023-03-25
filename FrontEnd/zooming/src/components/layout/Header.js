@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import Logo from './partials/Logo';
-import SignInModal from '../pages/SignIn';
 import AuthContext from '../../login/AuthContext';
 import Cookies from 'js-cookie';
 

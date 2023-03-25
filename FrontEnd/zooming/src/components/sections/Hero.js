@@ -5,8 +5,6 @@ import ButtonGroup from '../elements/ButtonGroup';
 import Button from '../elements/Button';
 import Image from '../elements/Image';
 import Modal from '../elements/Modal';
-// import SignInModal from '../pages/Signup';
-
 
 const propTypes = {
   ...SectionProps.types
@@ -71,12 +69,11 @@ const Hero = ({
               <p className="m-0 mb-32 reveal-from-bottom" data-reveal-delay="400">
                 HangOn....!!!! Here to go with your meetings and webinar's at just some clicks away. Create, Invite and Join to your gatherings of meeting or an corporate webinar.
                 </p>
-              <div className="reveal-from-bottom" data-reveal-delay="600">
+              <div className="reveal-from-bottom" data-reveal-delay="600"> &nbsp;
                 <ButtonGroup>
                   <Button tag="a" color="primary" wideMobile href="/Plans">
                     Plans & Pricing
-                    </Button>
-                      <Button color="dark"></Button>
+                  </Button>
                 </ButtonGroup>
               </div>
             </div>

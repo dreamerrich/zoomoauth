@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState } from "react";
 import jwt_decode from "jwt-decode";
 import { useHistory } from "react-router-dom";
 import Cookies from "js-cookie";
@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }) => {
       ? jwt_decode(localStorage.getItem("authTokens"))
       : null
   );
-  const [loading, setLoading] = useState(true);
+
   const [isLogged, setIsLogged] = useState(false);
   const history = useHistory();
 
@@ -86,25 +86,6 @@ export const AuthProvider = ({ children }) => {
     .then(data => console.log(data))
   }
 
-  // const loginUser = async (username, password) => {
-  //   const response = await fetch("http://127.0.0.1:8000/login", {
-  //     method: "POST",
-  //     headers: { 
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({
-  //       username,
-  //       password,
-  //     }),
-  //     });
-  //   const data = await response.json();
-  //     if (response.status === 200) {
-  //     history.push("/Dashboard");
-  //     } else {
-  //       alert("Something went wrong!");
-  //     }
-  // };
-
   const registerUser = async (
     username,
     email,
@@ -135,10 +116,11 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logoutUser = () => {
-    // setAuthTokens(null);
-    // setUser(null);
+    setAuthTokens(null);
+    setUser(null);
     localStorage.removeItem("authTokens");
-    localStorage.removeItem("logged_in")
+    localStorage.removeItem("logged_in");
+    Cookies.remove('code')
     history.push("/");
   };
 
@@ -156,6 +138,7 @@ export const AuthProvider = ({ children }) => {
         start_time,
         timezone,
         duration,
+        
       }),
     });
     if (response.status === 200) {
@@ -233,7 +216,6 @@ export const AuthProvider = ({ children }) => {
     authTokens,
     setAuthTokens,
     registerUser,
-    // loginUser,
     logoutUser,
     CreateMeeting,
     UpdateMeeting,
@@ -244,12 +226,6 @@ export const AuthProvider = ({ children }) => {
     backendtoken,
   };
 
-  // useEffect(() => {
-  //   if (authTokens) {
-  //     setUser(jwt_decode(authTokens));
-  //   }
-  //   setLoading(false);
-  // }, [authTokens, loading]);
   return (
     <AuthContext.Provider value={contextData}>{children}</AuthContext.Provider>
   );

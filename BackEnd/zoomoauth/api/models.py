@@ -18,13 +18,11 @@ class Tokens(models.Model):
     refreshtoken = models.CharField(max_length=255, null=True)
 
 class CreateMeeting(models.Model):
-    user = models.ForeignKey(ZoomUser, on_delete=models.CASCADE, null=False)
     id = models.AutoField(primary_key=True)
     topic = models.CharField(max_length=255, null=False, unique=True)
     start_time = models.DateTimeField(null=False)
     duration = models.IntegerField(null=False)
     timezone = models.CharField(max_length=255,choices=zones, null=False)
-    agenda = models.CharField(max_length=500, null=False, unique=True)
     url = models.CharField(max_length=255, null=False, editable=False)
     meeting_id = models.CharField(max_length=255, null=False, editable=False)
     passcode = models.CharField(max_length=255, null=False, editable=False)

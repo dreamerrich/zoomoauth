@@ -17,7 +17,6 @@ import MeetingDetail from './components/video/MeetingDetail';
 import ListMeeting from './components/video/ListMeetings';
 import DashBoard from './login/DashBoard';
 import { AuthProvider } from './login/AuthContext';
-import SignIn from './components/pages/SignIn';
 
 // Initialize Google Analytics
 ReactGA.initialize(process.env.REACT_APP_GA_CODE);
@@ -48,7 +47,6 @@ const App = () => {
         <AuthProvider>
         <Switch>
           <AppRoute exact path="/" component={Home} layout={LayoutDefault} />
-          <Route exact path="/SignIn" component={SignIn} />
           <Route exact path="/plans" component={Plans} />
           <Route exact path="/Product" component={Product} />
           <Route exact path="/CreateMeeting" component={CreateMeeting} />

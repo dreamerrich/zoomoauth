@@ -9,7 +9,6 @@ User = get_user_model()
 
 
 class MeetingSerializer(serializers.ModelSerializer):
-  user = serializers.PrimaryKeyRelatedField(read_only=True, default=serializers.CurrentUserDefault())
   class Meta:
     model = CreateMeeting
     fields = '__all__'

@@ -170,7 +170,7 @@ api_url = "https://api.zoom.us/v2/"
 class ZoomMeetings(APIView):
 
     def post(self, request):
-        serializer_class = MeetingSerializer(data=request.data, context={'request':request})
+        serializer_class = MeetingSerializer(data=request.data)
         access_token = request.META.get('HTTP_AUTHORIZATION', '').split(' ')[1]
         print("🚀 ~ file: views.py:174 ~ access_token:", access_token)
         headers = {
@@ -181,23 +181,26 @@ class ZoomMeetings(APIView):
             "topic":request.data['topic'], 
             "start_time":date.strftime('yyyy-MM-ddTHH:mm:ssZ'), 
             "timezone":request.data['timezone'], 
-            "duration":request.data['duration']
+            "duration":request.data['duration'],
+            # "agenda": request.data['agenda']
         }
         response = requests.post(api_url+'users/me/meetings', headers=headers, json=data)
         meet_detail = response.text
         detail = json.loads(meet_detail)
         if serializer_class.is_valid(raise_exception=True):
-            serializer_class.save(
-                topic=request.data['topic'],
-                start_time=request.data['start_time'],
-                duration=request.data['duration'],
-                timezone = request.data['timezone'],
-                agenda = request.data['agenda'],
-                url=detail['join_url'],
-                meeting_id=detail['id'],
-                passcode=detail['password'],
-                user = self.request.user 
-            )
+            try:
+                serializer_class.save(
+                    topic=request.data['topic'],
+                    start_time=request.data['start_time'],
+                    duration=request.data['duration'],
+                    timezone = request.data['timezone'],
+                    url=detail['join_url'],
+                    meeting_id=detail['id'],
+                    passcode=detail['password'],
+                    
+                )
+            except KeyError as e:
+                print(f"Error: {e}")
             return Response(serializer_class.data)
         return response
 
