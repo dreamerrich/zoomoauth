@@ -9,30 +9,30 @@ import Cookies from 'js-cookie';
 
 
 const Home = () => {
-  const { GetCode, Tokens } = useContext(AuthContext);
-    const [isauth, setIsAuth] = useState(false)
+  // const { GetCode, Tokens } = useContext(AuthContext);
+  // const [isauth, setIsAuth] = useState(false)
 
-    const handleClick = async e => {
-        e.preventDefault();
-        if(!localStorage.getItem("logged_in"))  
-        GetCode()
-    };
+  //   const handleClick = async e => {
+  //       e.preventDefault();
+  //       if(!localStorage.getItem("logged_in"))  
+  //       GetCode()
+  //   };
 
-    const getparam = new URLSearchParams(window.location.search)
-    const data = getparam.get('code')
-    Cookies.set('code', data, 20)
-    const code = Cookies.get('code')
+  //   const getparam = new URLSearchParams(window.location.search)
+  //   const data = getparam.get('code')
+  //   Cookies.set('code', data, 20)
+  //   const code = Cookies.get('code')
 
-    useEffect(() => {
-        if(!localStorage.getItem("authtokens") && code && !isauth) {
-          Tokens()
-          setIsAuth(true)
-        }
-      }, [isauth, code])
+  //   useEffect(() => {
+  //       if(!localStorage.getItem("authtokens") && code && !isauth) {
+  //         Tokens()
+  //         setIsAuth(true)
+  //       }
+  //     }, [isauth, code])
 
   return (
 
-      <div onLoad={handleClick}>
+      <div>
         <div>
           <Hero className="illustration-section-01" />
           <FeaturesTiles />

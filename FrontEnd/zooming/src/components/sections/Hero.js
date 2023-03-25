@@ -1,12 +1,12 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import classNames from 'classnames';
 import { SectionProps } from '../../utils/SectionProps';
 import ButtonGroup from '../elements/ButtonGroup';
 import Button from '../elements/Button';
 import Image from '../elements/Image';
 import Modal from '../elements/Modal';
-import SignInModal from '../pages/SignUpModal';
-import AuthContext from '../../login/AuthContext';
+// import SignInModal from '../pages/Signup';
+
 
 const propTypes = {
   ...SectionProps.types
@@ -76,7 +76,7 @@ const Hero = ({
                   <Button tag="a" color="primary" wideMobile href="/Plans">
                     Plans & Pricing
                     </Button>
-                      <Button color="dark"><SignInModal join={true}  /></Button>
+                      <Button color="dark"></Button>
                 </ButtonGroup>
               </div>
             </div>

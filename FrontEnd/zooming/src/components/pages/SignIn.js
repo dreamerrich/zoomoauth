@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState, useRef } from 'react';
-import { Button, Form, FormGroup, Input } from 'reactstrap';
 import AuthContext from '../../login/AuthContext';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import Cookies from 'js-cookie';
+
 
 const propTypes = {
     navPosition: PropTypes.string,
@@ -79,55 +79,13 @@ const SignIn = ({
       bottomDivider && 'has-bottom-divider'
     );
 
-    const { loginUser } = useContext(AuthContext);
-
-    const handleSubmit = async e => {
-        const username = e.target.username.value;
-        const password = e.target.password.value;
-        e.preventDefault();
-        loginUser(username, password);
-    };
+    
 
     return(
-        <section
-        {...props}
-        className={outerClasses}
-        >
         <div>
-            
+            <div> 
+            </div>
         </div>
-        <div className={innerClasses}>
-            <div className='container'>
-            <div>
-                <h3>Log In</h3>
-            </div>
-            <Form  onSubmit={handleSubmit} className='text-center'>
-                <FormGroup>
-                    <Input
-                        type="text"
-                        name="username"
-                        placeholder='username'
-                        id="username"
-                        required
-                    />&nbsp; 
-                    <Input
-                        type="password"
-                        name="password"
-                        placeholder='Password'
-                        id='password'
-                        required
-                    />&nbsp; <br />
-                    <Button color="light" >SignIn</Button> &nbsp; &nbsp; <br/>
-                    <br />
-                </FormGroup>
-                    &nbsp; &nbsp; 
-            </Form>
-            </div>
-            </div>
-        <div>
-            
-            </div>
-        </section>
     )
 
    }

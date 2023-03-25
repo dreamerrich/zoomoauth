@@ -59,8 +59,8 @@ export const AuthProvider = ({ children }) => {
     });
     const data = await response.json();
     if (response.status === 200 && data) {
-      // setAuthTokens(data);
-      // setUser(jwt_decode(data.access_token));
+      setAuthTokens(data);
+      setUser(jwt_decode(data.access_token));
       localStorage.setItem("authTokens", JSON.stringify(data));
       return response;
     } else {
@@ -135,8 +135,8 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logoutUser = () => {
-    setAuthTokens(null);
-    setUser(null);
+    // setAuthTokens(null);
+    // setUser(null);
     localStorage.removeItem("authTokens");
     localStorage.removeItem("logged_in")
     history.push("/");
@@ -244,12 +244,12 @@ export const AuthProvider = ({ children }) => {
     backendtoken,
   };
 
-  useEffect(() => {
-    if (authTokens) {
-      setUser(jwt_decode(authTokens.access_token));
-    }
-    setLoading(false);
-  }, [authTokens, loading]);
+  // useEffect(() => {
+  //   if (authTokens) {
+  //     setUser(jwt_decode(authTokens));
+  //   }
+  //   setLoading(false);
+  // }, [authTokens, loading]);
   return (
     <AuthContext.Provider value={contextData}>{children}</AuthContext.Provider>
   );

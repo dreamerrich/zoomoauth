@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import Logo from './partials/Logo';
-import SignInModal from '../pages/SignInModal';
+import SignInModal from '../pages/SignIn';
 import AuthContext from '../../login/AuthContext';
+import Cookies from 'js-cookie';
 
 const propTypes = {
   navPosition: PropTypes.string,
@@ -83,6 +84,28 @@ const Header = ({
     className
     );
 
+    const { GetCode, Tokens } = useContext(AuthContext);
+    const [isauth, setIsAuth] = useState(false)
+
+    const handleCode = async e => {
+        e.preventDefault();
+        if(!localStorage.getItem("logged_in"))  
+        GetCode()
+    };
+
+    const getparam = new URLSearchParams(window.location.search)
+    const data = getparam.get('code')
+    Cookies.set('code', data, 20)
+    const code = Cookies.get('code')
+
+    useEffect(() => {
+        if(!localStorage.getItem("authtokens") && code && !isauth) {
+          Tokens()
+          setIsAuth(true)
+        }
+      }, [isauth, code])
+
+
   return (
     <header
       {...props}
@@ -145,7 +168,7 @@ const Header = ({
                     </li>
                       : 
                     <li>
-                      <Link to="#" onClick={openMenu}><SignInModal/></Link> 
+                      <Link to="#" onClick={handleCode}>Login</Link> 
                     </li>
                    } 
                     </ul>}
