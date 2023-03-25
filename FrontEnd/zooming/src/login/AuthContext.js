@@ -10,7 +10,6 @@ export default AuthContext;
 const client_id = "WiIRiYxPRYi0TXfYLETA"
 const client_secret = "i0XquN5BjonaQT406qyCbNn6gz3LJ7RB"
 const redirect_uri = "http://localhost:3000/"
-// const authorizeUrl = "https://zoom.us/oauth/"
 
 
 export const AuthProvider = ({ children }) => {
@@ -28,19 +27,19 @@ export const AuthProvider = ({ children }) => {
   const [isLogged, setIsLogged] = useState(false);
   const history = useHistory();
 
-  const cookieValue = Cookies.get('code') 
   
   const GetCode = async () => {
     if(!isLogged){
-      console.log(isLogged)
+      console.log('isLogged', isLogged)
       await window.open('http://127.0.0.1:8000/code', '_self')
       localStorage.setItem("logged_in",true)
       isLogged(true)
     }
     setIsLogged(false);
   };
-
+  
   const Tokens = async () => {
+    const cookieValue = Cookies.get('code')
     const authdata = btoa(`${client_id} + ':' + ${client_secret}`)
     const response = await fetch(`http://127.0.0.1:8000/tokens`, {
       method: "POST",
@@ -59,38 +58,52 @@ export const AuthProvider = ({ children }) => {
 
     });
     const data = await response.json();
-    if (response.status === 200) {
+    if (response.status === 200 && data) {
       // setAuthTokens(data);
-      // setUser(jwt_decode(data.access));
+      // setUser(jwt_decode(data.access_token));
       localStorage.setItem("authTokens", JSON.stringify(data));
-      return data.access_token;
+      return response;
     } else {
       alert("Something went wrong!");
     }
-    console.log(">>>>>>>>>>>>>>>>>>>>",response.data);
+    console.log(">>>>>>>>>>>>>>>>>>>>",data);
   };
 
-  const loginUser = async (username, password) => {
-    const response = await fetch("http://127.0.0.1:8000/login", {
+  const backendtoken = async () => {
+    const token = localStorage.getItem("authTokens")
+    const accessToken = JSON.parse(token);
+    const access = accessToken.access_token
+    const accessdata = localStorage.setItem('access', access)
+    const Atoken = localStorage.getItem('access') 
+    const response = await fetch(`http://127.0.0.1:8000/gettoken`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+      headers : { 
+        Authorization: `Bearer ${Atoken}`,
       },
-      body: JSON.stringify({
-        username,
-        password,
-      }),
-    });
-    const data = await response.json();
-    if (response.status === 200) {
-      setAuthTokens(data);
-      setUser(jwt_decode(data.access_token));
-      localStorage.setItem("authTokens", JSON.stringify(data));
-      history.push("/Dashboard");
-    } else {
-      alert("Something went wrong!");
-    }
-  };
+      body: 'data',
+    })
+    .then(response => response.json(token))
+    .then(data => console.log(data))
+  }
+
+  // const loginUser = async (username, password) => {
+  //   const response = await fetch("http://127.0.0.1:8000/login", {
+  //     method: "POST",
+  //     headers: { 
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({
+  //       username,
+  //       password,
+  //     }),
+  //     });
+  //   const data = await response.json();
+  //     if (response.status === 200) {
+  //     history.push("/Dashboard");
+  //     } else {
+  //       alert("Something went wrong!");
+  //     }
+  // };
 
   const registerUser = async (
     username,
@@ -220,7 +233,7 @@ export const AuthProvider = ({ children }) => {
     authTokens,
     setAuthTokens,
     registerUser,
-    loginUser,
+    // loginUser,
     logoutUser,
     CreateMeeting,
     UpdateMeeting,
@@ -228,11 +241,12 @@ export const AuthProvider = ({ children }) => {
     GetCode,
     // Code,
     Tokens,
+    backendtoken,
   };
 
   useEffect(() => {
     if (authTokens) {
-      setUser(jwt_decode(authTokens.access));
+      setUser(jwt_decode(authTokens.access_token));
     }
     setLoading(false);
   }, [authTokens, loading]);

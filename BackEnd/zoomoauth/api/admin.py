@@ -4,4 +4,3 @@ from .models import *
 admin.site.register(ZoomUser)
 admin.site.register(Tokens)
 admin.site.register(CreateMeeting)
-admin.site.register(userData)

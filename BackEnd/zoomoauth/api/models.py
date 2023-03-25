@@ -6,11 +6,11 @@ import pytz
 zones=[(timezone,timezone) for timezone in pytz.all_timezones]
     
 class ZoomUser(models.Model):
-    first_name = models.CharField(max_length=64, null=False, unique=True)
-    last_name = models.CharField(max_length=64, null=False, unique=True)
-    email = models.EmailField(null=False, unique=True)
-    password = models.CharField( max_length=32 ,null=False)
-    type = models.IntegerField(null=True)
+    first_name = models.CharField(max_length=255, null=True)
+    last_name = models.CharField(max_length=255, null=True)
+    email = models.EmailField(null=True, unique=True)
+    userid = models.CharField(max_length=255, null=True)
+    
 
 class Tokens(models.Model):
     code = models.CharField(max_length=255, null=True)
@@ -31,9 +31,3 @@ class CreateMeeting(models.Model):
 
     def __str__(self):
         return str(self.meeting_id) 
-
-class userData(models.Model):
-    firstname = models.CharField(max_length=255, null=True)
-    lastname = models.CharField(max_length=255, null=True)
-    userid = models.CharField(max_length=255, null=True)
-    email = models.EmailField()

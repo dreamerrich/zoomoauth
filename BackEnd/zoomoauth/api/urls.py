@@ -10,4 +10,5 @@ urlpatterns = [
     path('code',ZoomUser.as_view()),
     path('getcode', Codeget.as_view()),
     path('tokens', ZoomToken.as_view()),
+    path('gettoken', getTokens.as_view()),
 ]

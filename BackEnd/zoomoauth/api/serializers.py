@@ -21,14 +21,10 @@ class MeetingSerializer(serializers.ModelSerializer):
 class ZoomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = ZoomUser
-        fields = ('id', 'first_name', 'last_name', 'password', 'type')
+        fields = ('first_name', 'last_name', 'userid', 'email')
 
 class TokenSerializer(serializers.ModelSerializer):
    class Meta:
       model = Tokens
       fields = ('code','accesstoken', 'refreshtoken')
 
-class UserdataSerialzer(serializers.ModelSerializer):
-   class Meta:
-      model = userData
-      fields = '__all__'
