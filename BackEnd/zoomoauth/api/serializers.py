@@ -3,8 +3,6 @@ from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.models import User
 from .models import *;
-from django.contrib.auth import get_user_model
-User = get_user_model()
 
 
 
@@ -13,13 +11,9 @@ class MeetingSerializer(serializers.ModelSerializer):
     model = CreateMeeting
     fields = '__all__'
 
-  def get_inventory(self, obj):
-    user = self.context['request'].user
-    return user
-
 class ZoomUserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ZoomUser
+        model = Zoomuser
         fields = ('first_name', 'last_name', 'userid', 'email')
 
 class TokenSerializer(serializers.ModelSerializer):

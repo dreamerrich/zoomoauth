@@ -1,16 +1,16 @@
 from django.db import models
-from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
-from django.contrib.auth.models import User
 import pytz
 
 zones=[(timezone,timezone) for timezone in pytz.all_timezones]
     
-class ZoomUser(models.Model):
+class Zoomuser(models.Model):
     first_name = models.CharField(max_length=255, null=True)
     last_name = models.CharField(max_length=255, null=True)
     email = models.EmailField(null=True, unique=True)
     userid = models.CharField(max_length=255, null=True)
     
+    def __str__(self):
+        return str(self.userid) 
 
 class Tokens(models.Model):
     code = models.CharField(max_length=255, null=True)
@@ -18,14 +18,14 @@ class Tokens(models.Model):
     refreshtoken = models.CharField(max_length=255, null=True)
 
 class CreateMeeting(models.Model):
-    id = models.AutoField(primary_key=True)
-    topic = models.CharField(max_length=255, null=False, unique=True)
+    mid = models.AutoField(primary_key=True)
+    topic = models.CharField(max_length=255, null=False)
     start_time = models.DateTimeField(null=False)
     duration = models.IntegerField(null=False)
     timezone = models.CharField(max_length=255,choices=zones, null=False)
-    url = models.CharField(max_length=255, null=False, editable=False)
-    meeting_id = models.CharField(max_length=255, null=False, editable=False)
-    passcode = models.CharField(max_length=255, null=False, editable=False)
+    url = models.CharField(max_length=255, null=True)
+    meeting_id = models.CharField(max_length=255, null=True)
+    passcode = models.CharField(max_length=255, null=True)
 
     def __str__(self):
         return str(self.meeting_id) 

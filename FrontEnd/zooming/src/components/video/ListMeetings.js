@@ -88,11 +88,13 @@ const propTypes = {
     const [meeting, setMeeting] = useState([])
     const token = localStorage.getItem("authTokens");
     const Token = JSON.parse(token);
+    const access = Token.access_token
+    // console.log("🚀 ~ file: ListMeetings.js:92 ~ access:", access)
     
     const fetchData = () => {
-        fetch('http://127.0.0.1:8000/meeting',{ 
+        fetch('http://127.0.0.1:8000/meetings',{ 
             headers: new Headers({
-            'Authorization': 'Bearer ' + Token.access, 
+            'Authorization': 'Bearer ' + access, 
             'Content-Type': 'application/x-www-form-urlencoded'
         })},)
         .then(Response => {
@@ -100,6 +102,7 @@ const propTypes = {
         })
         .then(data => {
                 setMeeting(data)
+                console.log(meeting);
             })
         }
 
@@ -120,6 +123,10 @@ const propTypes = {
         history.push(`/ListMeeting`)
     }
     localStorage.removeItem(d_id)
+
+    const startmeet = (e) => {
+        window.open('', '_blank')
+    }
       
     return (
         <section
@@ -164,8 +171,9 @@ const propTypes = {
                                         (meeting.map((i)=> {
                                             return (
                                                 <tr>
-                                                    <td><h6>{i.start_time}</h6></td>
+                                                    <td><h6>{i.start_time}</h6></td> &nbsp;
                                                     <td><h6 key={i.topic}>{i.topic}</h6><br/>{i.meeting_id}</td>
+                                                    <td><Button onClick={startmeet}>Start</Button></td>
                                                     <td><Button onClick={()=>dataid(i.id)}>Edit</Button></td>
                                                     <td><Button className='btn btn-danger' onClick={()=>d_id(i.id)}>Delete</Button></td>
                                                 </tr>

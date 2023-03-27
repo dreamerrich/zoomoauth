@@ -51,7 +51,8 @@ const UpdateMeeting = ({
 
     const token = localStorage.getItem("authTokens");
     const accessToken = JSON.parse(token);
-    const auth = accessToken.access
+    const auth = accessToken.access_token
+    // console.log("🚀 ~ file: UpdateMeeting.js:54 ~ auth:", auth)
 
     const id = localStorage.getItem("data")
 
@@ -68,6 +69,7 @@ const UpdateMeeting = ({
         })
         .then(data => {
                 setMeetingData(data)
+                console.log(data);
             })
     }
 
@@ -75,7 +77,7 @@ const UpdateMeeting = ({
       get_meeting()
     }, [])
 
-    console.log("🚀 ~ file: UpdateMeeting.js:86 ~ date:", meetingdata.start_time)
+    // console.log("🚀 ~ file: UpdateMeeting.js:86 ~ date:", meetingdata.start_time)
     // function getFormattedDate() {
     //   var pattern = /(.?)\/(.?)\/(.*?)$/;
     //   var result = meetingdata.start_time.replace(pattern,function(match,p1,p2,p3){

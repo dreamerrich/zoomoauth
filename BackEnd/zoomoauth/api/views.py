@@ -13,8 +13,7 @@ import json
 from rest_framework import status
 from django_filters.rest_framework import DjangoFilterBackend
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
-from rest_framework.decorators import action
-from django.views.decorators.csrf import csrf_exempt
+from django.http import Http404
 
 # Create your views here.
 
@@ -80,7 +79,7 @@ class ZoomToken(APIView):
         response = requests.post(auth_url+'token', headers=headers, params=params)
         tokendata = response.text
         tokens = json.loads(tokendata)
-        print("🚀 ~ file: views.py:79 ~ tokens:", tokens)
+        # print("🚀 ~ file: views.py:79 ~ tokens:", tokens)
         if serializer_class.is_valid():
             try:
                 serializer_class.save(
@@ -187,8 +186,8 @@ class ZoomMeetings(APIView):
         response = requests.post(api_url+'users/me/meetings', headers=headers, json=data)
         meet_detail = response.text
         detail = json.loads(meet_detail)
+        print("🚀 ~ file: views.py:189 ~ detail:", detail)
         if serializer_class.is_valid(raise_exception=True):
-            try:
                 serializer_class.save(
                     topic=request.data['topic'],
                     start_time=request.data['start_time'],
@@ -199,28 +198,65 @@ class ZoomMeetings(APIView):
                     passcode=detail['password'],
                     
                 )
-            except KeyError as e:
-                print(f"Error: {e}")
-            return Response(serializer_class.data)
-        return response
-
-
+           
+        return Response(serializer_class.data)
+    
     def get(self, request):
         access_token = request.META.get('HTTP_AUTHORIZATION', '').split(' ')[1]
         print("🚀 ~ file: views.py:174 ~ access_token:", access_token)
+        user_id = Zoomuser.objects.get()
+        print("🚀 ~ file: views.py:208 ~ userid:", user_id)
+        headers = {
+            'Authorization': 'Bearer ' + access_token,
+            'Content-Type': 'application/json'
+        }
+
+        params = {
+            'type': 'scheduled',
+            'page_size': 30
+        }
+
+        response = requests.get(api_url+'users/me/meetings', headers=headers, params=params)
+        print("🚀 ~ file: views.py:220 ~ response:", response)
+        meetings = response.json()
+        print("🚀 ~ file: views.py:222 ~ meetings:", meetings)
+        data = meetings['meetings']
+        return Response(data)
+    
+class updatemeeting(APIView):
+    
+    def get_object(self, request, id):
+        access_token = request.META.get('HTTP_AUTHORIZATION', '').split(' ')[1]
+        print("🚀 ~ file: views.py:174 ~ access_token:", access_token)
+        meeting_id = CreateMeeting.objects.get(mid=id)
         headers = {
             'Authorization': 'Bearer ' + access_token
         }
-        response = requests.get(api_url+'users/me/meetings', headers=headers)
-        return response
+        response = requests.get(api_url+'meetings/'+str(meeting_id), headers=headers)
+        if response.status_code == 200:
+            meeting_data = response.json()
+            print("🚀 ~ file: views.py:237 ~ meeting_data:", meeting_data)
+            return Response(meeting_data)
+        return HttpResponse(response)
 
-    def get(self, request, meeting_id):
+    def patch(self, request, id):
         access_token = request.META.get('HTTP_AUTHORIZATION', '').split(' ')[1]
         print("🚀 ~ file: views.py:174 ~ access_token:", access_token)
-        headers = {'Authorization': 'Bearer ' + access_token }
-        response = requests.get(api_url+'meetings/'+meeting_id, headers=headers)
-        return response
-
+        meeting_id = self.get_object(id)
+        # meeting_id = CreateMeeting.objects.get(mid=id)
+        print("🚀 ~ file: views.py:232 ~ meeting_id:", meeting_id)
+        date = datetime.datetime.now()
+        url = 'https://api.zoom.us/v2/meetings/'+str(meeting_id)
+        header = {'authorization': 'Bearer '+ access_token}
+        meeting = requests.patch(url,json=request.data, headers=header)
+        print("🚀 ~ file: views.py:237 ~ meeting:", meeting)
+        serializer_class = MeetingSerializer(meeting_id,data=request.data)
+        if serializer_class.is_valid(raise_exception=True):
+            serializer_class.save()
+            return Response(serializer_class.data)
+        else :
+            return Response("No data", serializer_class.error)
+        
     def delete(self, request, meeting_id):
         access_token = request.META.get('HTTP_AUTHORIZATION', '').split(' ')[1]
         print("🚀 ~ file: views.py:174 ~ access_token:", access_token)
@@ -229,23 +265,6 @@ class ZoomMeetings(APIView):
         }
         response = requests.delete(api_url+'meetings/'+meeting_id, headers=headers)
         return response
-
-    def patch(self,request, id, format=None):
-        access_token = request.META.get('HTTP_AUTHORIZATION', '').split(' ')[1]
-        print("🚀 ~ file: views.py:174 ~ access_token:", access_token)
-        meeting_id = self.get_object(id)
-        date = datetime.datetime.now()
-        headers = {
-            'Authorization': 'Bearer ' + access_token
-        }
-        data = {"start_time": date.strftime('yyyy-MM-ddTHH:mm:ssZ')}
-        response = requests.patch(api_url+'meetings/'+meeting_id, headers=headers, json=data)
-        serializer_class = MeetingSerializer(meeting_id,data=request.data,context={'request':request})
-        if serializer_class.is_valid(raise_exception=True):
-            serializer_class.save()
-            return Response(serializer_class.data)
-        else :
-            return Response("No data", serializer_class.error)
 
     # def get(self, request, user_id):
     #     access_token = request.META.get('HTTP_AUTHORIZATION', '').split(' ')[1]
@@ -258,7 +277,7 @@ class ZoomMeetings(APIView):
 
 '''-------------filtering---------------'''  
 class MeetingList(APIView):
-    permission_classes = [IsAuthenticated, ]
+    # permission_classes = [IsAuthenticated, ]
     filter_backends = (filters.SearchFilter, DjangoFilterBackend)
     search_fields = ["topic"]
     filterset_field = ['start_time']
@@ -277,3 +296,23 @@ class MeetingList(APIView):
         the_filtered_qs = self.filter_queryset(self.get_queryset())
         serializer = MeetingSerializer(the_filtered_qs, many=True)
         return Response(serializer.data)
+    
+
+'''-------------meeting detail---------------'''  
+
+class MeetingLink(APIView):
+    def get(self, request):
+        queryset = CreateMeeting.objects.filter().latest('start_time')
+        serializer_class = MeetingSerializer(queryset)
+        return Response(serializer_class.data)
+    
+'''-------------profile---------------''' 
+
+
+class Profile(APIView):
+    def get(self, request):
+        current_user = request.user
+        if request.user.is_authenticated:
+            serializer = ZoomUserSerializer(current_user)
+            return Response(serializer.data)
+        return Response("No user Found")
