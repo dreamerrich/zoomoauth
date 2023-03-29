@@ -54,12 +54,12 @@ const UpdateMeeting = ({
     const auth = accessToken.access_token
     // console.log("🚀 ~ file: UpdateMeeting.js:54 ~ auth:", auth)
 
-    const id = localStorage.getItem("data")
+    const id = localStorage.getItem("id")
 
     const [ meetingdata, setMeetingData ] = useState([])
 
     const get_meeting = async e => {
-      fetch('http://127.0.0.1:8000/updatemeet/'+id,{ 
+      fetch('http://127.0.0.1:8000/updateget/'+id,{ 
         headers: {
           'Authorization': 'Bearer ' + auth, 
           'Content-Type': 'application/json'
@@ -68,10 +68,10 @@ const UpdateMeeting = ({
             return Response.json()
         })
         .then(data => {
-                setMeetingData(data)
                 console.log(data);
-            })
-    }
+                setMeetingData(data)
+              })
+            }
 
     useEffect(() => {
       get_meeting()
@@ -91,7 +91,7 @@ const UpdateMeeting = ({
     e.preventDefault();
       const updated_date = moment(meetingdata.start_time).format('yyyy-MM-DDTHH:mm:ss')
       UpdateMeeting(meetingdata.topic,updated_date,meetingdata.duration,meetingdata.timezone)
-      localStorage.removeItem('data')
+      localStorage.removeItem('id')
     }
 
   

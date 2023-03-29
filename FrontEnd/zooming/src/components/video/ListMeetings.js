@@ -112,12 +112,14 @@ const propTypes = {
 
     let data =("")
     const dataid = (e) => {
-        data = localStorage.setItem("data", JSON.stringify(e))
-        history.push(`/UpdateMeeting/${e}`)
+        console.log(e);
+        data = localStorage.setItem("id", JSON.stringify(e))
+        history.push(`/UpdateMeeting/${e}`) 
     }
 
     let delete_id =("")
     const d_id = (e) => {
+        console.log(e);
         delete_id = localStorage.setItem("delete_id", JSON.stringify(e))
         DeleteMeeting()
         history.push(`/ListMeeting`)
@@ -162,17 +164,18 @@ const propTypes = {
                                         return (
                                             <tr key={i.id}>
                                                 <td><h6>{i.start_time}</h6></td>
-                                                <td><h6 key={i.topic}>{i.topic}</h6><br/>{i.meeting_id}</td>
+                                                <td><h6 key={i.topic}>{i.topic}</h6><br/>{i.id}</td>
                                                 <td><Button onClick={()=>dataid(i.id)}>Edit</Button></td>
                                                 <td><Button className='btn btn-danger' onClick={()=>d_id(i.id)}>Delete</Button></td>
                                             </tr>
                                         )}))
                                         :
                                         (meeting.map((i)=> {
+                                            console.log(i,"data")
                                             return (
                                                 <tr>
                                                     <td><h6>{i.start_time}</h6></td> &nbsp;
-                                                    <td><h6 key={i.topic}>{i.topic}</h6><br/>{i.meeting_id}</td>
+                                                    <td><h6 key={i.topic}>{i.topic}</h6><br/>{i.id}</td>
                                                     <td><Button onClick={startmeet}>Start</Button></td>
                                                     <td><Button onClick={()=>dataid(i.id)}>Edit</Button></td>
                                                     <td><Button className='btn btn-danger' onClick={()=>d_id(i.id)}>Delete</Button></td>

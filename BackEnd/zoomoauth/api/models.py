@@ -8,6 +8,7 @@ class Zoomuser(models.Model):
     last_name = models.CharField(max_length=255, null=True)
     email = models.EmailField(null=True, unique=True)
     userid = models.CharField(max_length=255, null=True)
+    displayname =  models.CharField(max_length=255, null=True)
     
     def __str__(self):
         return str(self.userid) 
@@ -18,7 +19,6 @@ class Tokens(models.Model):
     refreshtoken = models.CharField(max_length=255, null=True)
 
 class CreateMeeting(models.Model):
-    mid = models.AutoField(primary_key=True)
     topic = models.CharField(max_length=255, null=False)
     start_time = models.DateTimeField(null=False)
     duration = models.IntegerField(null=False)

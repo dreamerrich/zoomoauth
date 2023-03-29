@@ -151,7 +151,7 @@ export const AuthProvider = ({ children }) => {
   const UpdateMeeting = async (topic, start_time, duration, timezone) => {
     const token = localStorage.getItem("authTokens");
     const authtoken = JSON.parse(token);
-    const id = localStorage.getItem("data");
+    const id = localStorage.getItem("id");
     const response = await fetch(`http://127.0.0.1:8000/updatemeet/${id}`, {
       method: "PATCH",
       headers: {
@@ -165,7 +165,7 @@ export const AuthProvider = ({ children }) => {
         duration,
       }),
     });
-    if (response.status === 302) {
+    if (response.status === 200) {
       history.push(`/ListMeeting`)
       return response.data;
     } else {
