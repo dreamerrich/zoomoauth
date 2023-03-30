@@ -7,6 +7,7 @@ urlpatterns = [
     path('meetings', ZoomMeetings.as_view()),
     path('updateget/<int:id>', updatemeeting.as_view()),
     path('updatemeet/<int:id>', updatemeeting.as_view()),
+    path('delete/<int:id>', deleteMeeting.as_view()),
     path('meeting', MeetingList.as_view()),
     path('profile', Profile.as_view()), 
     path('code',ZoomUser.as_view()),

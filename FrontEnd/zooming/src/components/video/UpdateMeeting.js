@@ -68,7 +68,7 @@ const UpdateMeeting = ({
             return Response.json()
         })
         .then(data => {
-                console.log(data);
+                // console.log(data);
                 setMeetingData(data)
               })
             }

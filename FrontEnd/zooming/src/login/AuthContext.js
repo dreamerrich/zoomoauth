@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }) => {
   
   const GetCode = async () => {
     if(!isLogged){
-      console.log('isLogged', isLogged)
+      // console.log('isLogged', isLogged)
       await window.open('http://127.0.0.1:8000/code', '_self')
       localStorage.setItem("logged_in",true)
       isLogged(true)
@@ -66,7 +66,7 @@ export const AuthProvider = ({ children }) => {
     } else {
       alert("Something went wrong!");
     }
-    console.log(">>>>>>>>>>>>>>>>>>>>",data);
+    // console.log(">>>>>>>>>>>>>>>>>>>>",data);
   };
 
   const backendtoken = async () => {
@@ -177,7 +177,7 @@ export const AuthProvider = ({ children }) => {
     const token = localStorage.getItem("authTokens");
     const authtoken = JSON.parse(token);
     const id = localStorage.getItem("delete_id");
-    const response = await fetch(`http://127.0.0.1:8000/updatemeet/${id}`, {
+    const response = await fetch(`http://127.0.0.1:8000/delete/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: "Bearer " + authtoken.access_token,

@@ -2,7 +2,6 @@ from rest_framework.response import Response
 from  .serializers import *
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import APIView
-from rest_framework import viewsets
 from django.conf import settings
 from rest_framework import filters
 from zoomoauth import settings
@@ -79,7 +78,6 @@ class ZoomToken(APIView):
         response = requests.post(auth_url+'token', headers=headers, params=params)
         tokendata = response.text
         tokens = json.loads(tokendata)
-        # print("🚀 ~ file: views.py:79 ~ tokens:", tokens)
         if serializer_class.is_valid():
             try:
                 serializer_class.save(
@@ -126,7 +124,7 @@ class ZoomToken(APIView):
 class getTokens(APIView):
     def post(self, request, *args, **kwargs):
         access1 = request.META.get('HTTP_AUTHORIZATION', '').split(' ')[1]
-        return Response("ok")
+        return Response("token obtained")
 
 '''-------------obtaning a new access token---------------'''
 
@@ -244,7 +242,6 @@ class updatemeeting(APIView):
         meeting_id = CreateMeeting.objects.get(meeting_id=id)
         print("🚀 ~ file: views.py:235 ~ meeting_id:", meeting_id)
         # data = meeting_id[0].meeting_id
-        # print("🚀 ~ file: views.py:248 ~ data:", data)
         headers = {
             'Authorization': 'Bearer ' + access_token,
             'Content-Type': 'application/json'
@@ -266,25 +263,25 @@ class updatemeeting(APIView):
             'Content-Type': 'application/json'
         }
         response = requests.patch(api_url+'meetings/'+str(meeting_id), json=request.data, headers=headers)
-        # meeting = requests.patch(url,json=request.data, headers=header)
         print("🚀 ~ file: views.py:274 ~ meeting:", response)
         # serializer_class = MeetingSerializer(meeting_id,data=request.data)
         # if serializer_class.is_valid(raise_exception=True):
         #     serializer_class.save()
         return Response(response)
 
-        
+class deleteMeeting(APIView):       
     def delete(self, request, id):
         access_token = request.META.get('HTTP_AUTHORIZATION', '').split(' ')[1]
         print("🚀 ~ file: views.py:174 ~ access_token:", access_token)
-        meeting_id = CreateMeeting.objects.filter(meeting_id=id)
+        meeting_id = CreateMeeting.objects.get(meeting_id=id)
         print("🚀 ~ file: views.py:281 ~ meeting_id:", meeting_id)
         headers = {
-            'Authorization': 'Bearer ' + access_token
+            'Authorization': 'Bearer ' + access_token,
+            'Content-Type': 'application/json'
         }
         response = requests.delete(api_url+'meetings/'+str(meeting_id), headers=headers)
-        meeting_id.delete()
-        return HttpResponse(response)
+        print("🚀 ~ file: views.py:287 ~ response:", response)
+        return Response(response)
 
 '''-------------filtering---------------'''  
 class MeetingList(APIView):

@@ -102,7 +102,7 @@ const propTypes = {
         })
         .then(data => {
                 setMeeting(data)
-                console.log(meeting);
+                // console.log(meeting);
             })
         }
 
@@ -112,14 +112,14 @@ const propTypes = {
 
     let data =("")
     const dataid = (e) => {
-        console.log(e);
+        // console.log(e);
         data = localStorage.setItem("id", JSON.stringify(e))
         history.push(`/UpdateMeeting/${e}`) 
     }
 
     let delete_id =("")
     const d_id = (e) => {
-        console.log(e);
+        // console.log(e);
         delete_id = localStorage.setItem("delete_id", JSON.stringify(e))
         DeleteMeeting()
         history.push(`/ListMeeting`)
@@ -171,7 +171,7 @@ const propTypes = {
                                         )}))
                                         :
                                         (meeting.map((i)=> {
-                                            console.log(i,"data")
+                                            // console.log(i,"data")
                                             return (
                                                 <tr>
                                                     <td><h6>{i.start_time}</h6></td> &nbsp;
