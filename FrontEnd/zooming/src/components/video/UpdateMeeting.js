@@ -52,7 +52,7 @@ const UpdateMeeting = ({
     const token = localStorage.getItem("authTokens");
     const accessToken = JSON.parse(token);
     const auth = accessToken.access_token
-    // console.log("🚀 ~ file: UpdateMeeting.js:54 ~ auth:", auth)
+    
 
     const id = localStorage.getItem("id")
 
@@ -68,7 +68,7 @@ const UpdateMeeting = ({
             return Response.json()
         })
         .then(data => {
-                // console.log(data);
+               
                 setMeetingData(data)
               })
             }
@@ -76,16 +76,6 @@ const UpdateMeeting = ({
     useEffect(() => {
       get_meeting()
     }, [])
-
-    // console.log("🚀 ~ file: UpdateMeeting.js:86 ~ date:", meetingdata.start_time)
-    // function getFormattedDate() {
-    //   var pattern = /(.?)\/(.?)\/(.*?)$/;
-    //   var result = meetingdata.start_time.replace(pattern,function(match,p1,p2,p3){
-    //     var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    //     return(p2<10?''+p2:p2)+""+months[(p1-1)]+""+p3;
-    //   })
-    //   alert(result)
-    // }
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -138,7 +128,6 @@ const UpdateMeeting = ({
                             id="start_time"
                             placeholder='date'
                             value={meetingdata ? meetingdata.start_time ? meetingdata.start_time.split(':')[0]+':'+meetingdata.start_time.split(':')[1]:'':''}
-                            // value={meetingdata.start_time}
                             onChange={changeHandler}
                             required
                         />

@@ -30,7 +30,6 @@ export const AuthProvider = ({ children }) => {
   
   const GetCode = async () => {
     if(!isLogged){
-      // console.log('isLogged', isLogged)
       await window.open('http://127.0.0.1:8000/code', '_self')
       localStorage.setItem("logged_in",true)
       isLogged(true)
@@ -62,11 +61,12 @@ export const AuthProvider = ({ children }) => {
       setAuthTokens(data);
       setUser(jwt_decode(data.access_token));
       localStorage.setItem("authTokens", JSON.stringify(data));
+      
       return response;
     } else {
       alert("Something went wrong!");
     }
-    // console.log(">>>>>>>>>>>>>>>>>>>>",data);
+  
   };
 
   const backendtoken = async () => {
@@ -85,35 +85,6 @@ export const AuthProvider = ({ children }) => {
     .then(response => response.json(token))
     .then(data => console.log(data))
   }
-
-  const registerUser = async (
-    username,
-    email,
-    first_name,
-    last_name,
-    password,
-    password2
-  ) => {
-    const response = await fetch("http://127.0.0.1:8000/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username,
-        email,
-        first_name,
-        last_name,
-        password,
-        password2,
-      }),
-    });
-    if (response.status === 201) {
-      history.push("/SignIn");
-    } else {
-      alert("Data already exist");
-    }
-  };
 
   const logoutUser = () => {
     setAuthTokens(null);
@@ -215,7 +186,6 @@ export const AuthProvider = ({ children }) => {
     setUser,
     authTokens,
     setAuthTokens,
-    registerUser,
     logoutUser,
     CreateMeeting,
     UpdateMeeting,

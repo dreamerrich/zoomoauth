@@ -241,7 +241,6 @@ class updatemeeting(APIView):
         access_token = request.META.get('HTTP_AUTHORIZATION', '').split(' ')[1]
         meeting_id = CreateMeeting.objects.get(meeting_id=id)
         print("🚀 ~ file: views.py:235 ~ meeting_id:", meeting_id)
-        # data = meeting_id[0].meeting_id
         headers = {
             'Authorization': 'Bearer ' + access_token,
             'Content-Type': 'application/json'
